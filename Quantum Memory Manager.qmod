@@ -1,0 +1,30 @@
+qstruct MemoryBlock {
+  addr: qnum<2>;
+  data: qnum<4>;
+  active: qbit;
+}
+
+qfunc apply_memory_cost(gamma: real, m: MemoryBlock) {
+  aux: qbit;
+  within {
+    aux = (m.active == 1);
+  } apply {
+    control (aux) {
+      phase (-(m.data + (2 * m.addr)), gamma);
+    }
+  }
+}
+
+qfunc main(params: real[6], output m: MemoryBlock) {
+  allocate(m);
+  hadamard_transform(m);
+  X(m.active);  // ✅ sets active = |1⟩ (quantum allocation flag)
+  repeat (i: 3) {
+    apply_memory_cost(params[0:3][i], m);
+    apply_to_all(lambda(q) {
+      RX(params[3:6][i], q);
+    }, m);
+  }
+}
+
+
