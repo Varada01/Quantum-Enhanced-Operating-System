@@ -1,0 +1,37 @@
+qstruct QSEVars {
+  key: qnum<4>;
+  random: qnum<4>;
+  entangled: qbit;
+}
+
+// Quantum Random Number Generator using Hadamards
+qfunc qrng(output q: qnum<4>) {
+  hadamard_transform(q);
+}
+
+// Predicate for oracle — e.g., mimics tampering or entropy condition
+qfunc security_predicate(const v: QSEVars, permutable res: qbit) {
+  res ^= ((v.key + v.random) ^ 5) >= 10;
+}
+
+// Deutsch-Jozsa-style wrapper for security predicate
+qfunc qse_engine(predicate: qfunc(QSEVars, qbit), v: QSEVars) {
+  within {
+    hadamard_transform(v.key);
+    hadamard_transform(v.random);
+    H(v.entangled);
+  } apply {
+    phase_oracle(lambda(v, y) {
+      predicate(v, y);
+    }, v);
+  }
+}
+
+qfunc main(output v: QSEVars) {
+  allocate(v);
+  X(v.entangled);  // simulate initialized entangled bit
+  qse_engine(lambda(v, y) {
+    security_predicate(v, y);
+  }, v);
+}
+
