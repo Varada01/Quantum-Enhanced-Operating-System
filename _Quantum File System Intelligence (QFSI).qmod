@@ -1,0 +1,61 @@
+qfunc file_predicate(target: int, const x: qbit[], permutable res: qbit) {
+  // Marks the file index if it matches the target
+  repeat (i: x.len) {
+    if ((floor(target / (2 ** i)) % 2) == 1) {
+      X(x[i]);
+    }
+  }
+
+  // Apply multi-controlled Z using an auxiliary bit
+  H(res);
+  repeat (i: x.len) {
+    CX(x[i], res);
+  }
+  H(res);
+
+  // Uncompute
+  repeat (i: x.len) {
+    if ((floor(target / (2 ** i)) % 2) == 1) {
+      X(x[i]);
+    }
+  }
+}
+
+qfunc grover_iteration(target: int, x: qbit[], aux: qbit) {
+  // Apply the oracle
+  file_predicate(target, x, aux);
+
+  // Apply the diffusion operator
+  hadamard_transform(x);
+  repeat (i: x.len) {
+    X(x[i]);
+  }
+
+  H(aux);
+  repeat (i: x.len) {
+    CX(x[i], aux);
+  }
+  H(aux);
+
+  repeat (i: x.len) {
+    X(x[i]);
+  }
+  hadamard_transform(x);
+}
+
+qfunc main(output file_index: qnum<3>) {
+  allocate(file_index);
+  aux: qbit;
+
+  // Grover initialization
+  within {
+    hadamard_transform(file_index);
+    allocate(aux);
+    X(aux);
+    H(aux);
+  } apply {
+    // Perform 1 iteration of Grover’s algorithm
+    grover_iteration(5, file_index, aux);
+  }
+}
+
