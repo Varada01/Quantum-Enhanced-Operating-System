@@ -1,0 +1,32 @@
+qstruct SchedulerVars {
+  latency: qnum<3>;
+  energy: qnum<2>;
+  throughput: qnum<2>;
+}
+
+qfunc anomaly_score(const v: SchedulerVars, permutable res: qbit) {
+  tmp1: qbit;
+  tmp2: qbit;
+  tmp3: qbit;
+
+  tmp1 = v.latency > 4;
+  tmp2 = v.energy > 2;
+  tmp3 = v.throughput < 2;
+
+  res ^= tmp1 & tmp2 & tmp3;
+}
+
+qfunc main(output v: SchedulerVars) {
+  allocate(v);
+
+  within {
+    hadamard_transform(v.latency);
+    hadamard_transform(v.energy);
+    hadamard_transform(v.throughput);
+  } apply {
+    phase_oracle(lambda(v, res) {
+      anomaly_score(v, res);
+    }, v);
+  }
+}
+
