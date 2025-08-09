@@ -29,9 +29,9 @@ Monitors performance metrics in quantum superposition for rapid anomaly detectio
 QEOS operates within the QEOS Kernel Layer, leveraging the Classiq Runtime Engine on standard hardware.
 Classical system calls ensure compatibility, meaning existing applications can seamlessly benefit from quantum-enhanced performance.
 
-> User Applications
-> Classical System Calls
-> QEOS Kernel Layer  ← QPS, QMM, QSE, QFSI, QNS, QSI
-> Classiq Runtime Engine
-> Classical Hardware
+> User Applications.
+> Classical System Calls.
+> QEOS Kernel Layer  ← QPS, QMM, QSE, QFSI, QNS, QSI.
+> Classiq Runtime Engine.
+> Classical Hardware.
 
