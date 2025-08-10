@@ -1,4 +1,4 @@
-# QEOS – Quantum-Enhanced Operating System
+# QEOS – Quantum-Enhanced Operating System part of Coherence Quest's CQhack25.
 
 > 🚀 Built with **Classiq** for quantum circuit synthesis and optimization.  
 > Integrates quantum algorithms into OS-level scheduling, memory management, networking, and security.
